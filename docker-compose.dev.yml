@@ -1,0 +1,25 @@
+services:
+  nextjs-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: bp-frontend-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env.local
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+    command: npm run dev
+    restart: unless-stopped
+    networks:
+      - bp_network
+
+networks:
+  bp_network:
+    external: true

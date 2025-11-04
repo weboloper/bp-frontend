@@ -1,0 +1,19 @@
+services:
+  nextjs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bp-frontend
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    networks:
+      - frontend-network
+
+networks:
+  frontend-network:
+    driver: bridge

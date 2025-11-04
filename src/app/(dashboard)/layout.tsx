@@ -1,0 +1,33 @@
+"use client";
+
+import { useAuth } from "@/hooks/useAuth";
+import AppSidebar from "@/components/layout/dashboard/Sidebar";
+import DashboardHeader from "@/components/layout/dashboard/DashboardHeader";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { Spinner } from "@/components/ui/spinner";
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  // const { isLoading } = useAuth();
+
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-screen">
+  //       <Spinner className="h-8 w-8 text-muted-foreground" />
+  //     </div>
+  //   );
+  // }
+
+  return (
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <DashboardHeader />
+        <main className="flex-1 p-6">{children}</main>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}
