@@ -15,6 +15,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
+import Image from "next/image";
 
 export default function DashboardHeader() {
   const { user } = useAuth();
@@ -25,10 +26,13 @@ export default function DashboardHeader() {
   };
 
   return (
-    <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-4 border-b bg-background px-4">
-      <div className="flex flex-1 items-center justify-between">
+    <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-4 border-b bg-background px-4 w-full">
+      <div className="flex flex-1 items-center justify-between w-full">
         <div className="flex items-center gap-4">
-          <SidebarTrigger className="[&_svg]:!size-5" />
+          <SidebarTrigger className="[&_svg]:!size-5 md:hidden" />
+          {/* Logo */}
+          <Image src="/logo.svg" alt="Logo" width={150} height={36} priority />
+
           <Separator orientation="vertical" className="hidden !h-4 sm:block" />
           <Breadcrumb className="hidden sm:block">
             <BreadcrumbList>
@@ -45,16 +49,6 @@ export default function DashboardHeader() {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          {/* <h1 className="text-lg font-semibold">
-            Welcome back, {user?.username}!
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {new Date().toLocaleDateString("en-US", {
-              weekday: "long",
-              month: "long",
-              day: "numeric",
-            })}
-          </p> */}
         </div>
 
         <div className="flex items-center gap-2">

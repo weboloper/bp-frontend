@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -22,7 +21,6 @@ import {
   SidebarMenuItem,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/hooks/useAuth";
 
 const menuItems = [
@@ -59,23 +57,8 @@ export default function AppSidebar() {
   const { user, isLoading } = useAuth();
 
   return (
-    <Sidebar>
-      <SidebarContent>
-        {/* Logo Section */}
-        <SidebarGroup>
-          <div className="px-4 py-2">
-            <Image
-              src="/logo.svg"
-              alt="Logo"
-              width={128}
-              height={24}
-              priority
-            />
-          </div>
-        </SidebarGroup>
-
-        <Separator />
-
+    <Sidebar className="[&>[data-slot=sidebar-container]]:top-16">
+      <SidebarContent className="lg:py-16">
         {/* Navigation Menu */}
         <SidebarGroup>
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>

@@ -4,7 +4,10 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { profileUpdateSchema, type ProfileUpdateFormData } from "@/lib/schemas/auth";
+import {
+  profileUpdateSchema,
+  type ProfileUpdateFormData,
+} from "@/lib/schemas/auth";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -22,6 +25,15 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
+
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 export default function ProfilePage() {
   const { user, updateProfile } = useAuth();
@@ -74,9 +86,10 @@ export default function ProfilePage() {
     return user.username.charAt(0).toUpperCase();
   };
 
-  const fullName = user.profile?.first_name && user.profile?.last_name
-    ? `${user.profile.first_name} ${user.profile.last_name}`
-    : "Not set";
+  const fullName =
+    user.profile?.first_name && user.profile?.last_name
+      ? `${user.profile.first_name} ${user.profile.last_name}`
+      : "Not set";
 
   const onSubmit = async (data: ProfileUpdateFormData) => {
     try {
@@ -112,9 +125,7 @@ export default function ProfilePage() {
       if (error.avatar) {
         setError("avatar", {
           type: "server",
-          message: Array.isArray(error.avatar)
-            ? error.avatar[0]
-            : error.avatar,
+          message: Array.isArray(error.avatar) ? error.avatar[0] : error.avatar,
         });
       }
       if (error.first_name) {
@@ -184,6 +195,21 @@ export default function ProfilePage() {
 
   return (
     <div className="space-y-6">
+      <Breadcrumb className="hidden sm:block">
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="#">Home</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="#">Dashboard</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Free</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Profile</h2>
@@ -200,7 +226,10 @@ export default function ProfilePage() {
       </div>
 
       {successMessage && (
-        <Alert variant="default" className="border-green-500 bg-green-50 text-green-900">
+        <Alert
+          variant="default"
+          className="border-green-500 bg-green-50 text-green-900"
+        >
           <CheckCircle2 className="h-4 w-4 text-green-600" />
           <AlertTitle>Success!</AlertTitle>
           <AlertDescription>{successMessage}</AlertDescription>
@@ -241,9 +270,7 @@ export default function ProfilePage() {
               <div className="flex items-center gap-2">
                 <h3 className="text-2xl font-semibold">{fullName}</h3>
                 <div className="flex gap-2">
-                  {user.is_active && (
-                    <Badge variant="success">Active</Badge>
-                  )}
+                  {user.is_active && <Badge variant="success">Active</Badge>}
                   {user.is_verified && (
                     <Badge variant="secondary">Verified</Badge>
                   )}
@@ -273,7 +300,10 @@ export default function ProfilePage() {
                       try {
                         setServerError("");
                         setSuccessMessage("");
-                        const file = avatarFiles && avatarFiles.length > 0 ? avatarFiles[0] : null;
+                        const file =
+                          avatarFiles && avatarFiles.length > 0
+                            ? avatarFiles[0]
+                            : null;
                         if (!file) return;
 
                         await updateProfile({
@@ -290,12 +320,16 @@ export default function ProfilePage() {
                         console.error("Avatar upload error:", error);
                         if (error.avatar) {
                           setServerError(
-                            Array.isArray(error.avatar) ? error.avatar[0] : error.avatar
+                            Array.isArray(error.avatar)
+                              ? error.avatar[0]
+                              : error.avatar
                           );
                         } else if (error.detail) {
                           setServerError(error.detail);
                         } else {
-                          setServerError(error.message || "Failed to upload avatar");
+                          setServerError(
+                            error.message || "Failed to upload avatar"
+                          );
                         }
                       }
                     }}
@@ -376,13 +410,19 @@ export default function ProfilePage() {
                   <div className="space-y-2">
                     <Label>Account Status</Label>
                     <div className="flex gap-2">
-                      <Badge variant={user.is_active ? "success" : "destructive"}>
+                      <Badge
+                        variant={user.is_active ? "success" : "destructive"}
+                      >
                         {user.is_active ? "Active" : "Inactive"}
                       </Badge>
-                      <Badge variant={user.is_verified ? "secondary" : "outline"}>
+                      <Badge
+                        variant={user.is_verified ? "secondary" : "outline"}
+                      >
                         {user.is_verified ? "Verified" : "Not Verified"}
                       </Badge>
-                      <Badge variant={user.has_password ? "secondary" : "outline"}>
+                      <Badge
+                        variant={user.has_password ? "secondary" : "outline"}
+                      >
                         {user.has_password ? "Password Set" : "No Password"}
                       </Badge>
                     </div>
@@ -514,7 +554,9 @@ export default function ProfilePage() {
               )}
               {user.profile?.updated_at && (
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Profile Updated:</span>
+                  <span className="text-muted-foreground">
+                    Profile Updated:
+                  </span>
                   <span className="font-medium">
                     {format(new Date(user.profile.updated_at), "PPP p")}
                   </span>
