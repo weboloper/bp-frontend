@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/hooks/useAuth";
+import { useAuthStore } from "@/store/useAuthStore";
 import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -18,7 +18,7 @@ import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 
 export default function DashboardHeader() {
-  const { user } = useAuth();
+  const user = useAuthStore((state) => state.user);
 
   const getUserInitials = () => {
     if (!user?.username) return "U";

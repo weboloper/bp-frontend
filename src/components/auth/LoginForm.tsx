@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginFormData } from "@/lib/schemas/auth";
 import { authAPI } from "@/lib/api";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuthStore } from "@/store/useAuthStore";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,7 +27,7 @@ interface LoginFormProps {
 
 export default function LoginForm({ redirectUrl = "/dashboard" }: LoginFormProps) {
   const [serverError, setServerError] = useState<string>("");
-  const { checkAuth } = useAuth();
+  const checkAuth = useAuthStore((state) => state.checkAuth);
   const router = useRouter();
 
   const {

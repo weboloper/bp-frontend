@@ -1,15 +1,15 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { create } from 'zustand';
 import { authAPI } from '@/lib/api';
 import type { User } from '@/types';
 
-interface AuthContextType {
+interface AuthState {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
+  logout: () => Promise<void>;
   updateProfile: (data: {
     first_name: string;
     last_name: string;
@@ -17,24 +17,24 @@ interface AuthContextType {
     bio?: string;
     avatar?: File | null;
   }) => Promise<void>;
+  setUser: (user: User | null) => void;
+  setIsLoading: (isLoading: boolean) => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const useAuthStore = create<AuthState>((set, get) => ({
+  user: null,
+  isLoading: true,
+  isAuthenticated: false,
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  setUser: (user) => set({ user, isAuthenticated: !!user }),
 
-  // Check if user is authenticated on mount
-  useEffect(() => {
-    checkAuth();
-  }, []);
+  setIsLoading: (isLoading) => set({ isLoading }),
 
-  const checkAuth = async () => {
+  checkAuth: async () => {
     try {
-      setIsLoading(true);
+      set({ isLoading: true });
       const userData = await authAPI.getMe();
-      setUser(userData);
+      set({ user: userData, isAuthenticated: true });
     } catch (err: any) {
       // If token expired, try to refresh
       if (err.shouldRefresh || err.status === 401) {
@@ -42,12 +42,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           await authAPI.refreshToken();
           // Retry getting user data with new token
           const userData = await authAPI.getMe();
-          setUser(userData);
+          set({ user: userData, isAuthenticated: true });
           return;
         } catch (refreshErr: any) {
           // Refresh failed - clear everything and logout
           console.log('Refresh token expired, logging out');
-          setUser(null);
+          set({ user: null, isAuthenticated: false });
 
           // Clear cookies via logout endpoint
           try {
@@ -61,57 +61,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      setUser(null);
+      set({ user: null, isAuthenticated: false });
       // Don't set error on initial load if not authenticated
       console.log('Not authenticated');
     } finally {
-      setIsLoading(false);
+      set({ isLoading: false });
     }
-  };
+  },
 
-  const logout = async () => {
+  logout: async () => {
     try {
       await authAPI.logout();
-      setUser(null);
-      setIsLoading(true);
+      set({ user: null, isAuthenticated: false, isLoading: true });
     } catch (err: any) {
       console.error('Logout error:', err);
       throw err;
     }
-  };
+  },
 
-  const updateProfile = async (data: {
-    first_name: string;
-    last_name: string;
-    birth_date: string;
-    bio?: string;
-    avatar?: File | null;
-  }) => {
+  updateProfile: async (data) => {
     try {
       const updatedUser = await authAPI.updateProfile(data);
-      setUser(updatedUser);
+      set({ user: updatedUser });
     } catch (err: any) {
       console.error('Profile update error:', err);
       throw err;
     }
-  };
-
-  const value: AuthContextType = {
-    user,
-    isLoading,
-    isAuthenticated: !!user,
-    logout,
-    checkAuth,
-    updateProfile,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-}
+  },
+}));

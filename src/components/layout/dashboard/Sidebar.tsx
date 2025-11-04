@@ -21,7 +21,7 @@ import {
   SidebarMenuItem,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuthStore } from "@/store/useAuthStore";
 
 const menuItems = [
   {
@@ -54,7 +54,8 @@ const menuItems = [
 
 export default function AppSidebar() {
   const pathname = usePathname();
-  const { user, isLoading } = useAuth();
+  const user = useAuthStore((state) => state.user);
+  const isLoading = useAuthStore((state) => state.isLoading);
 
   return (
     <Sidebar className="[&>[data-slot=sidebar-container]]:top-16">

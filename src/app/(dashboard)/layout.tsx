@@ -1,10 +1,8 @@
 "use client";
 
-import { useAuth } from "@/hooks/useAuth";
 import AppSidebar from "@/components/layout/dashboard/Sidebar";
 import DashboardHeader from "@/components/layout/dashboard/DashboardHeader";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
-import { Spinner } from "@/components/ui/spinner";
 
 export default function DashboardLayout({
   children,

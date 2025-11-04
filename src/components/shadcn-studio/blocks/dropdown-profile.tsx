@@ -1,7 +1,7 @@
 "use client";
 import type { ReactNode } from "react";
 import { useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useRouter } from "next/navigation";
 
 import {
@@ -33,7 +33,8 @@ type Props = {
 };
 
 const ProfileDropdown = ({ trigger, defaultOpen, align = "end" }: Props) => {
-  const { user, logout } = useAuth();
+  const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
   const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 

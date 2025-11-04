@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -36,7 +36,8 @@ import {
 } from "@/components/ui/breadcrumb";
 
 export default function ProfilePage() {
-  const { user, updateProfile } = useAuth();
+  const user = useAuthStore((state) => state.user);
+  const updateProfile = useAuthStore((state) => state.updateProfile);
   const [isEditing, setIsEditing] = useState(false);
   const [serverError, setServerError] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
